@@ -8,6 +8,7 @@ interface Props {
   title: string;
   subtitle: string;
   pendingFollowUpCount: number;
+  pendingNotificationCount?: number;
   userEmail?: string;
   clinicName?: string;
   theme?: string;
@@ -21,6 +22,7 @@ export function Layout({
   title,
   subtitle,
   pendingFollowUpCount,
+  pendingNotificationCount,
   userEmail,
   clinicName,
   theme = "Dark",
@@ -34,6 +36,7 @@ export function Layout({
         current={current}
         onChange={onNavigate}
         pendingFollowUpCount={pendingFollowUpCount}
+        pendingNotificationCount={pendingNotificationCount}
         clinicName={clinicName}
       />
       <main className="app-main">

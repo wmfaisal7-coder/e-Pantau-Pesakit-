@@ -141,3 +141,23 @@ create table if not exists app_settings (
 insert into app_settings (clinic_name, theme)
 select 'Klinik A', 'Dark'
 where not exists (select 1 from app_settings);
+
+
+alter table if exists appointments
+add column if not exists reminder_status text not null default 'Belum Dihantar'
+    check (reminder_status in ('Belum Dihantar','Sudah Dihantar','Gagal','Tidak Perlu')),
+add column if not exists reminder_sent_at timestamptz,
+add column if not exists reminder_channel text,
+add column if not exists reminder_note text;
+
+create table if not exists notification_logs (
+    id uuid primary key default gen_random_uuid(),
+    appointment_id uuid not null references appointments(id) on delete cascade,
+    patient_id uuid not null references patients(id) on delete cascade,
+    channel text not null default 'Dalam Sistem',
+    message text,
+    status text not null default 'Sudah Dihantar'
+        check (status in ('Sudah Dihantar','Gagal','Menunggu')),
+    sent_at timestamptz not null default now(),
+    created_at timestamptz not null default now()
+);

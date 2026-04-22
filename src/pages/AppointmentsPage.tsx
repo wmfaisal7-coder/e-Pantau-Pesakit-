@@ -22,7 +22,11 @@ function emptyForm(nextCode: string, patientId: string): Omit<Appointment, "id">
     treatmentType: "",
     clinicOrOfficer: "Klinik A",
     manualStatus: "Dijadualkan",
-    notes: ""
+    notes: "",
+    reminderStatus: "Belum Dihantar",
+    reminderSentAt: null,
+    reminderChannel: null,
+    reminderNote: null
   };
 }
 
@@ -74,7 +78,11 @@ export function AppointmentsPage({ appointments, patients, onCreateAppointment, 
       treatmentType: appointment.treatmentType,
       clinicOrOfficer: appointment.clinicOrOfficer,
       manualStatus: appointment.manualStatus,
-      notes: appointment.notes
+      notes: appointment.notes,
+      reminderStatus: appointment.reminderStatus,
+      reminderSentAt: appointment.reminderSentAt ?? null,
+      reminderChannel: appointment.reminderChannel ?? null,
+      reminderNote: appointment.reminderNote ?? null
     });
     setOpen(true);
   }
@@ -139,6 +147,7 @@ export function AppointmentsPage({ appointments, patients, onCreateAppointment, 
             { header: "Pegawai", render: (row) => row.clinicOrOfficer },
             { header: "Status Sistem", render: (row) => <span className="pill">{getSystemStatus(row)}</span> },
             { header: "Status Manual", render: (row) => row.manualStatus },
+            { header: "Notifikasi", render: (row) => <span className="pill">{row.reminderStatus}</span> },
             { header: "Follow-Up", render: (row) => getFollowUpRequired(row) },
             { header: "Hari Lagi", render: (row) => getDaysRemaining(row.appointmentDate) },
             {

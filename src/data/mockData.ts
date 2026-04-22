@@ -49,7 +49,11 @@ export const appointments: Appointment[] = [
     treatmentType: "Insulin",
     clinicOrOfficer: "Klinik A",
     manualStatus: "Dijadualkan",
-    notes: ""
+    notes: "",
+    reminderStatus: "Belum Dihantar",
+    reminderSentAt: null,
+    reminderChannel: null,
+    reminderNote: null
   },
   {
     id: "2",
@@ -60,7 +64,11 @@ export const appointments: Appointment[] = [
     treatmentType: "Ubat tekanan darah",
     clinicOrOfficer: "Klinik A",
     manualStatus: "Dijadualkan",
-    notes: ""
+    notes: "",
+    reminderStatus: "Belum Dihantar",
+    reminderSentAt: null,
+    reminderChannel: null,
+    reminderNote: null
   },
   {
     id: "3",
@@ -71,7 +79,11 @@ export const appointments: Appointment[] = [
     treatmentType: "Semakan susulan",
     clinicOrOfficer: "Klinik A",
     manualStatus: "Dijadualkan",
-    notes: ""
+    notes: "",
+    reminderStatus: "Belum Dihantar",
+    reminderSentAt: null,
+    reminderChannel: null,
+    reminderNote: null
   },
   {
     id: "4",
@@ -82,7 +94,11 @@ export const appointments: Appointment[] = [
     treatmentType: "Inhaler",
     clinicOrOfficer: "Klinik B",
     manualStatus: "Tidak Hadir",
-    notes: ""
+    notes: "",
+    reminderStatus: "Tidak Perlu",
+    reminderSentAt: null,
+    reminderChannel: null,
+    reminderNote: null
   }
 ];
 

@@ -103,3 +103,14 @@ Untuk demo mudah:
 - Tapisan status pada modul Follow-Up
 - Selepas kemas kini follow-up, aplikasi refresh semula data dari Supabase
 - Lebih sesuai untuk penggunaan data online sebenar
+
+
+## Modul Notifikasi
+Versi ini menambah:
+- struktur notifikasi pada temujanji
+- halaman `Notifikasi`
+- status `Belum Dihantar` / `Sudah Dihantar`
+- log notifikasi di jadual `notification_logs`
+
+### Langkah selepas muat turun
+Jalankan semula `supabase_schema.sql` di Supabase SQL Editor supaya kolum notifikasi dan jadual `notification_logs` dicipta.
