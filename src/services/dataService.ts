@@ -146,10 +146,6 @@ export async function createAppointment(payload: Omit<Appointment, "id">): Promi
       reminder_status: payload.reminderStatus,
       reminder_sent_at: payload.reminderSentAt ?? null,
       reminder_channel: payload.reminderChannel ?? null,
-      reminder_note: payload.reminderNote ?? null,
-      reminder_status: payload.reminderStatus,
-      reminder_sent_at: payload.reminderSentAt ?? null,
-      reminder_channel: payload.reminderChannel ?? null,
       reminder_note: payload.reminderNote ?? null
     })
     .select()
