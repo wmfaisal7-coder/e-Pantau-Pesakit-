@@ -100,6 +100,12 @@ export default function App() {
   }, []);
 
   useEffect(() => {
+    if (loggedIn) {
+      refreshAll(true);
+    }
+  }, [loggedIn]);
+
+  useEffect(() => {
     if (!toast) return;
     const timer = setTimeout(() => setToast(""), 2500);
     return () => clearTimeout(timer);
