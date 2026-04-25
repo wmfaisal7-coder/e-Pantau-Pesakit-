@@ -142,11 +142,7 @@ export async function createAppointment(payload: Omit<Appointment, "id">): Promi
       treatment_type: payload.treatmentType,
       clinic_or_officer: payload.clinicOrOfficer,
       manual_status: payload.manualStatus,
-      notes: payload.notes,
-      reminder_status: payload.reminderStatus,
-      reminder_sent_at: payload.reminderSentAt ?? null,
-      reminder_channel: payload.reminderChannel ?? null,
-      reminder_note: payload.reminderNote ?? null,
+      notes: payload.notes
       reminder_status: payload.reminderStatus,
       reminder_sent_at: payload.reminderSentAt ?? null,
       reminder_channel: payload.reminderChannel ?? null,
