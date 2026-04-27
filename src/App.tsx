@@ -95,9 +95,15 @@ export default function App() {
     }
   }
 
-  useEffect(() => {
+useEffect(() => {
+  refreshAll(true);
+}, []);
+
+useEffect(() => {
+  if (loggedIn) {
     refreshAll(true);
-  }, []);
+  }
+}, [loggedIn]);
 
   useEffect(() => {
     if (!toast) return;
@@ -256,14 +262,19 @@ export default function App() {
     setLoggedIn(false);
   }
 
-  if (!loggedIn) {
-    return <LoginPage onLogin={(email) => {
-      const nextEmail = email ?? "admin@klinik.com";
-      setUserEmail(nextEmail);
-      setUserRole(inferRole(nextEmail));
-      setLoggedIn(true);
-    }} />;
-  }
+ if (!loggedIn) {
+  return (
+    <LoginPage
+      onLogin={async (email) => {
+        const nextEmail = email ?? "admin@klinik.com";
+        setUserEmail(nextEmail);
+        setUserRole(inferRole(nextEmail));
+        setLoggedIn(true);
+        await refreshAll(true);
+      }}
+    />
+  );
+}
 
   return (
     <Layout
