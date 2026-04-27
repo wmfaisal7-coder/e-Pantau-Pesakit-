@@ -9,11 +9,9 @@ import { PatientsPage } from "./pages/PatientsPage";
 import { AppointmentsPage } from "./pages/AppointmentsPage";
 import { ReportsPage } from "./pages/ReportsPage";
 import { SettingsPage } from "./pages/SettingsPage";
-import { createAppointment, createFollowUpIfNeeded, createPatient, deleteAppointment, deletePatient, getAppSettings, getAppointments, getFollowUps, getPatients, saveAppSettings, updateAppointment, updatePatient } from "./services/dataService";
 import { createAppointment, createFollowUpIfNeeded, createPatient, deleteAppointment, deletePatient, getAppSettings, getAppointments, getFollowUps, getNotificationLogs, getPatients, saveAppSettings, updateAppointment, updatePatient } from "./services/dataService";
 import { getCurrentUserEmail, signOut } from "./services/authService";
 import { hasSupabaseConfig } from "./supabase";
-import type { Appointment, FollowUp, Patient, ViewName } from "./types";
 import type { Appointment, FollowUp, NotificationLog, Patient, ViewName } from "./types";
 
 const pageConfig: Record<ViewName, { title: string; subtitle: string }> = {
@@ -71,13 +69,11 @@ export default function App() {
   async function refreshAll(showLoader = false) {
     try {
       if (showLoader) setLoading(true);
-      const [patientsData, appointmentsData, followUpsData, email, settings] = await Promise.all([
       const [patientsData, appointmentsData, followUpsData, email, settings, notificationLogsData] = await Promise.all([
         getPatients(),
         getAppointments(),
         getFollowUps(),
         getCurrentUserEmail(),
-        getAppSettings()
         getAppSettings(),
         getNotificationLogs()
       ]);
@@ -177,7 +173,6 @@ export default function App() {
 
   async function handleCreateAppointment(payload: Omit<Appointment, "id">) {
     if (!canEdit) return;
-    const mockAppointment: Appointment = { id: crypto.randomUUID(), ...payload };
     const mockAppointment: Appointment = { id: crypto.randomUUID(), ...payload, reminderStatus: payload.reminderStatus ?? "Belum Dihantar", reminderSentAt: payload.reminderSentAt ?? null, reminderChannel: payload.reminderChannel ?? null, reminderNote: payload.reminderNote ?? null };
     setAppointments((current) => [...current, mockAppointment]);
 
