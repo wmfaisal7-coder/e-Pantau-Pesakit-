@@ -10,9 +10,16 @@ interface Props {
   appointments: Appointment[];
   followUps: FollowUp[];
   onOpenFollowUp?: () => void;
+  onOpenAppointments?: () => void;
 }
 
-export function DashboardPage({ patients, appointments, followUps, onOpenFollowUp }: Props) {
+export function DashboardPage({
+  patients,
+  appointments,
+  followUps,
+  onOpenFollowUp,
+  onOpenAppointments
+}: Props) {
   const activePatients = patients.filter((p) => p.patientStatus === "Aktif").length;
   const todayAppointments = appointments.filter((a) => getSystemStatus(a) === "Hari Ini");
   const upcoming7 = appointments.filter((a) => {
@@ -48,8 +55,26 @@ export function DashboardPage({ patients, appointments, followUps, onOpenFollowU
       <div className="grid-stats">
         <StatCard label="Jumlah Pesakit" value={patients.length} hint="Semua pesakit direkodkan" icon="👥" />
         <StatCard label="Pesakit Aktif" value={activePatients} hint="Sedang dalam pemantauan" icon="💚" tone="success" />
-        <StatCard label="Temujanji Hari Ini" value={todayAppointments.length} hint="Perlu dipantau hari ini" icon="📅" tone="info" />
-        <StatCard label="7 Hari Akan Datang" value={upcoming7} hint="Jadual semasa" icon="🕒" />
+
+        <div className="clickable-card" onClick={onOpenAppointments}>
+          <StatCard
+            label="Temujanji Hari Ini"
+            value={todayAppointments.length}
+            hint="Perlu dipantau hari ini"
+            icon="📅"
+            tone="info"
+          />
+        </div>
+
+        <div className="clickable-card" onClick={onOpenAppointments}>
+          <StatCard
+            label="7 Hari Akan Datang"
+            value={upcoming7}
+            hint="Jadual semasa"
+            icon="🕒"
+          />
+        </div>
+
         <StatCard label="Temujanji Terlepas" value={missedAppointments.length} hint="Perlu tindakan segera" icon="⚠" tone="danger" />
         <StatCard label="Perlu Hubungi Semula" value={needFollowUp} hint="Susulan aktif" icon="📞" tone="warning" />
       </div>
