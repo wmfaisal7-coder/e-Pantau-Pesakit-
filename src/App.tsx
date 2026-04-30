@@ -3,7 +3,6 @@ import { Layout } from "./components/Layout";
 import { getFollowUpRequired } from "./lib";
 import { DashboardPage } from "./pages/DashboardPage";
 import { FollowUpPage } from "./pages/FollowUpPage";
-import { NotificationsPage } from "./pages/NotificationsPage";
 import { LoginPage } from "./pages/LoginPage";
 import { PatientsPage } from "./pages/PatientsPage";
 import { AppointmentsPage } from "./pages/AppointmentsPage";
