@@ -105,13 +105,19 @@ export function DashboardPage({
         <div className="card">
           <div className="card-title">Kes Follow-Up Segera</div>
           <Table
-            rows={followUps.slice(0, 5)}
-            columns={[
-              { header: "Pesakit", render: (row) => patients.find((p) => p.id === row.patientId)?.fullName ?? "-" },
-              { header: "Telefon", render: (row) => patients.find((p) => p.id === row.patientId)?.phoneNumber ?? "-" },
-              { header: "Status", render: (row) => row.contactStatus }
-            ]}
-          />
+            rows={followUps
+             .filter(
+               (row) =>
+                 patients.some((p) => p.id === row.patientId) &&
+                 row.contactStatus === "Belum Dihubungi"
+             )
+             .slice(0, 5)}
+           columns={[
+             { header: "Pesakit", render: (row) => patients.find((p) => p.id === row.patientId)?.fullName ?? "-" },
+             { header: "Telefon", render: (row) => patients.find((p) => p.id === row.patientId)?.phoneNumber ?? "-" },
+             { header: "Status", render: (row) => row.contactStatus }
+           ]}
+         />
         </div>
       </div>
 
