@@ -94,6 +94,7 @@ export function DashboardPage({
             rows={todayAppointments}
             columns={[
               { header: "Kod", render: (row) => row.appointmentCode },
+              { header: "Pesakit", render: (row) => patients.find((p) => p.id === row.patientId)?.fullName ?? "-" },
               { header: "Rawatan", render: (row) => row.treatmentType },
               { header: "Masa", render: (row) => row.appointmentTime },
               { header: "Pegawai", render: (row) => row.clinicOrOfficer }
