@@ -1,5 +1,5 @@
 import { appointments as mockAppointments, followUps as mockFollowUps, patients as mockPatients } from "../data/mockData";
-import type { Appointment, FollowUp, NotificationLog, Patient } from "../types";
+import type { Appointment, FollowUp, Patient } from "../types";
 import { hasSupabaseConfig, supabase } from "../supabase";
 
 function mapPatient(row: any): Patient {
@@ -27,11 +27,7 @@ function mapAppointment(row: any): Appointment {
     treatmentType: row.treatment_type,
     clinicOrOfficer: row.clinic_or_officer,
     manualStatus: row.manual_status,
-    notes: row.notes ?? "",
-    reminderStatus: row.reminder_status ?? "Belum Dihantar",
-    reminderSentAt: row.reminder_sent_at ?? null,
-    reminderChannel: row.reminder_channel ?? null,
-    reminderNote: row.reminder_note ?? null
+    notes: row.notes ?? ""
   };
 }
 
@@ -44,19 +40,6 @@ function mapFollowUp(row: any): FollowUp {
     followUpNote: row.follow_up_note ?? "",
     followUpDate: row.follow_up_date ?? null,
     handledBy: row.handled_by ?? null
-  };
-}
-
-
-function mapNotificationLog(row: any): NotificationLog {
-  return {
-    id: row.id,
-    appointmentId: row.appointment_id,
-    patientId: row.patient_id,
-    channel: row.channel,
-    message: row.message ?? "",
-    status: row.status,
-    sentAt: row.sent_at
   };
 }
 
@@ -83,6 +66,7 @@ export async function getFollowUps(): Promise<FollowUp[]> {
 
 export async function createPatient(payload: Omit<Patient, "id">): Promise<Patient | null> {
   if (!hasSupabaseConfig || !supabase) return null;
+
   const { data, error } = await supabase
     .from("patients")
     .insert({
@@ -98,12 +82,14 @@ export async function createPatient(payload: Omit<Patient, "id">): Promise<Patie
     })
     .select()
     .single();
+
   if (error) throw error;
   return mapPatient(data);
 }
 
 export async function updatePatient(payload: Patient): Promise<Patient | null> {
   if (!hasSupabaseConfig || !supabase) return null;
+
   const { data, error } = await supabase
     .from("patients")
     .update({
@@ -120,6 +106,7 @@ export async function updatePatient(payload: Patient): Promise<Patient | null> {
     .eq("id", payload.id)
     .select()
     .single();
+
   if (error) throw error;
   return mapPatient(data);
 }
@@ -132,6 +119,7 @@ export async function deletePatient(id: string): Promise<void> {
 
 export async function createAppointment(payload: Omit<Appointment, "id">): Promise<Appointment | null> {
   if (!hasSupabaseConfig || !supabase) return null;
+
   const { data, error } = await supabase
     .from("appointments")
     .insert({
@@ -142,20 +130,18 @@ export async function createAppointment(payload: Omit<Appointment, "id">): Promi
       treatment_type: payload.treatmentType,
       clinic_or_officer: payload.clinicOrOfficer,
       manual_status: payload.manualStatus,
-      notes: payload.notes,
-      reminder_status: payload.reminderStatus,
-      reminder_sent_at: payload.reminderSentAt ?? null,
-      reminder_channel: payload.reminderChannel ?? null,
-      reminder_note: payload.reminderNote ?? null
+      notes: payload.notes
     })
     .select()
     .single();
+
   if (error) throw error;
   return mapAppointment(data);
 }
 
 export async function updateAppointment(payload: Appointment): Promise<Appointment | null> {
   if (!hasSupabaseConfig || !supabase) return null;
+
   const { data, error } = await supabase
     .from("appointments")
     .update({
@@ -166,15 +152,12 @@ export async function updateAppointment(payload: Appointment): Promise<Appointme
       treatment_type: payload.treatmentType,
       clinic_or_officer: payload.clinicOrOfficer,
       manual_status: payload.manualStatus,
-      notes: payload.notes,
-      reminder_status: payload.reminderStatus,
-      reminder_sent_at: payload.reminderSentAt ?? null,
-      reminder_channel: payload.reminderChannel ?? null,
-      reminder_note: payload.reminderNote ?? null
+      notes: payload.notes
     })
     .eq("id", payload.id)
     .select()
     .single();
+
   if (error) throw error;
   return mapAppointment(data);
 }
@@ -216,6 +199,7 @@ export async function createFollowUpIfNeeded(payload: {
 
 export async function updateFollowUp(payload: FollowUp): Promise<void> {
   if (!hasSupabaseConfig || !supabase) return;
+
   const { error } = await supabase
     .from("follow_ups")
     .update({
@@ -225,9 +209,9 @@ export async function updateFollowUp(payload: FollowUp): Promise<void> {
       handled_by: payload.handledBy
     })
     .eq("id", payload.id);
+
   if (error) throw error;
 }
-
 
 export interface AppSettings {
   clinicName: string;
@@ -278,54 +262,10 @@ export async function saveAppSettings(payload: AppSettings): Promise<void> {
     return;
   }
 
-  const { error } = await supabase
-    .from("app_settings")
-    .insert({
-      clinic_name: payload.clinicName,
-      theme: payload.theme
-    });
-
-  if (error) throw error;
-}
-
-
-export async function getNotificationLogs(): Promise<NotificationLog[]> {
-  if (!hasSupabaseConfig || !supabase) return [];
-  const { data, error } = await supabase.from("notification_logs").select("*").order("sent_at", { ascending: false });
-  if (error) throw error;
-  return (data ?? []).map(mapNotificationLog);
-}
-
-export async function markReminderSent(payload: {
-  appointmentId: string;
-  patientId: string;
-  channel: string;
-  message: string;
-}): Promise<void> {
-  if (!hasSupabaseConfig || !supabase) return;
-
-  const timestamp = new Date().toISOString();
-
-  const { error: updateError } = await supabase
-    .from("appointments")
-    .update({
-      reminder_status: "Sudah Dihantar",
-      reminder_sent_at: timestamp,
-      reminder_channel: payload.channel,
-      reminder_note: payload.message
-    })
-    .eq("id", payload.appointmentId);
-
-  if (updateError) throw updateError;
-
-  const { error: logError } = await supabase.from("notification_logs").insert({
-    appointment_id: payload.appointmentId,
-    patient_id: payload.patientId,
-    channel: payload.channel,
-    message: payload.message,
-    status: "Sudah Dihantar",
-    sent_at: timestamp
+  const { error } = await supabase.from("app_settings").insert({
+    clinic_name: payload.clinicName,
+    theme: payload.theme
   });
 
-  if (logError) throw logError;
+  if (error) throw error;
 }
