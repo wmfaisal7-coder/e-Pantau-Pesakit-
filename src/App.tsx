@@ -164,13 +164,9 @@ useEffect(() => {
   if (!canEdit) return;
 
   const mockAppointment: Appointment = {
-    id: crypto.randomUUID(),
-    ...payload,
-    reminderStatus: payload.reminderStatus ?? "Belum Dihantar",
-    reminderSentAt: payload.reminderSentAt ?? null,
-    reminderChannel: payload.reminderChannel ?? null,
-    reminderNote: payload.reminderNote ?? null
-  };
+  id: crypto.randomUUID(),
+  ...payload
+};  
 
   setAppointments((current) => [...current, mockAppointment]);
 
@@ -285,7 +281,6 @@ useEffect(() => {
       title={pageConfig[view].title}
       subtitle={pageConfig[view].subtitle}
       pendingFollowUpCount={pendingFollowUpCount}
-      pendingNotificationCount={pendingNotificationCount}
       userEmail={userEmail}
       clinicName={clinicName}
       theme={theme}
