@@ -4,7 +4,6 @@ interface Props {
   current: ViewName;
   onChange: (view: ViewName) => void;
   pendingFollowUpCount: number;
-  pendingNotificationCount?: number;
   clinicName?: string;
 }
 
@@ -12,13 +11,12 @@ const items: { id: ViewName; label: string; icon: string }[] = [
   { id: "dashboard", label: "Dashboard", icon: "⊞" },
   { id: "patients", label: "Pesakit", icon: "👤" },
   { id: "appointments", label: "Temujanji", icon: "📅" },
-  { id: "notifications", label: "Notifikasi", icon: "🔔" },
   { id: "followup", label: "Follow-Up", icon: "📞" },
   { id: "reports", label: "Laporan", icon: "📊" },
   { id: "settings", label: "Tetapan", icon: "⚙" }
 ];
 
-export function Sidebar({ current, onChange, pendingFollowUpCount, pendingNotificationCount = 0, clinicName = "Klinik A" }: Props) {
+ export function Sidebar({ current, onChange, pendingFollowUpCount, clinicName = "Klinik A" }: Props) {
   return (
     <aside className="sidebar">
       <div className="brand">
@@ -38,9 +36,6 @@ export function Sidebar({ current, onChange, pendingFollowUpCount, pendingNotifi
           >
             <span>{item.icon}</span>
             <span className="grow">{item.label}</span>
-            {item.id === "followup" && pendingFollowUpCount > 0 ? (
-              <span className="badge-danger">{pendingFollowUpCount}</span>
-            ) : null}
             {item.id === "notifications" && pendingNotificationCount > 0 ? (
               <span className="badge-danger">{pendingNotificationCount}</span>
             ) : null}
