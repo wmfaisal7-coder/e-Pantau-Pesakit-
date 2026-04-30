@@ -16,7 +16,7 @@ const items: { id: ViewName; label: string; icon: string }[] = [
   { id: "settings", label: "Tetapan", icon: "⚙" }
 ];
 
- export function Sidebar({ current, onChange, pendingFollowUpCount, clinicName = "Klinik A" }: Props) {
+export function Sidebar({ current, onChange, pendingFollowUpCount, clinicName = "Klinik A" }: Props) {
   return (
     <aside className="sidebar">
       <div className="brand">
@@ -36,8 +36,8 @@ const items: { id: ViewName; label: string; icon: string }[] = [
           >
             <span>{item.icon}</span>
             <span className="grow">{item.label}</span>
-            {item.id === "notifications" && pendingNotificationCount > 0 ? (
-              <span className="badge-danger">{pendingNotificationCount}</span>
+            {item.id === "followup" && pendingFollowUpCount > 0 ? (
+              <span className="badge-danger">{pendingFollowUpCount}</span>
             ) : null}
           </button>
         ))}
