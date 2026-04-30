@@ -29,14 +29,3 @@ export function getFollowUpRequired(appointment: Appointment): "Ya" | "Tidak" {
   if (systemStatus === "Terlepas" || systemStatus === "Hari Ini") return "Ya";
   return "Tidak";
 }
-
-
-export function needsReminder(appointment: Appointment): boolean {
-  const systemStatus = getSystemStatus(appointment);
-  const days = getDaysRemaining(appointment.appointmentDate);
-  return (
-    appointment.manualStatus === "Dijadualkan" &&
-    appointment.reminderStatus === "Belum Dihantar" &&
-    (systemStatus === "Hari Ini" || (days >= 1 && days <= 3))
-  );
-}
