@@ -54,4 +54,4 @@ export interface FollowUp {
   handledBy: string | null;
 }
 
-export type ViewName = "dashboard" | "patients" | "appointments" | "notifications" | "followup" | "reports" | "settings";
+export type ViewName = "dashboard" | "patients" | "appointments" | "followup" | "reports" | "settings";
