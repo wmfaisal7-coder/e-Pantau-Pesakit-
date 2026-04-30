@@ -313,6 +313,7 @@ useEffect(() => {
               appointments={appointments}
               followUps={followUps}
               onOpenFollowUp={() => setView("followup")}
+              onOpenAppointments={() => setView("appointments")}
             />
           )}
           {view === "patients" && (
