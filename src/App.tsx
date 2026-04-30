@@ -26,10 +26,6 @@ const pageConfig: Record<ViewName, { title: string; subtitle: string }> = {
     title: "Temujanji",
     subtitle: "Semak status temujanji dan jadual rawatan pesakit."
   },
-  notifications: {
-    title: "Notifikasi",
-    subtitle: "Urus peringatan temujanji yang perlu dihantar tanpa mengubah dashboard utama."
-  },
   followup: {
     title: "Follow-Up",
     subtitle: "Keutamaan untuk pesakit yang perlu dihubungi semula."
@@ -67,18 +63,16 @@ export default function App() {
   async function refreshAll(showLoader = false) {
     try {
       if (showLoader) setLoading(true);
-      const [patientsData, appointmentsData, followUpsData, email, settings, notificationLogsData] = await Promise.all([
-        getPatients(),
-        getAppointments(),
-        getFollowUps(),
-        getCurrentUserEmail(),
-        getAppSettings(),
-        getNotificationLogs()
-      ]);
+      const [patientsData, appointmentsData, followUpsData, email, settings] = await Promise.all([
+  getPatients(),
+  getAppointments(),
+  getFollowUps(),
+  getCurrentUserEmail(),
+  getAppSettings()
+]);
       setPatients(patientsData);
       setAppointments(appointmentsData);
       setFollowUps(followUpsData);
-      setNotificationLogs(notificationLogsData);
       setClinicName(settings.clinicName);
       setTheme(settings.theme);
       if (email) {
@@ -111,15 +105,6 @@ useEffect(() => {
 
   const pendingFollowUpCount = useMemo(
     () => appointments.filter((appointment) => getFollowUpRequired(appointment) === "Ya").length,
-    [appointments]
-  );
-
-  const pendingNotificationCount = useMemo(
-    () => appointments.filter((appointment) => getFollowUpRequired(appointment) !== "Ya" && appointment.manualStatus === "Dijadualkan" && appointment.reminderStatus === "Belum Dihantar").filter((appointment) => {
-      const days = new Date(appointment.appointmentDate).getTime() - new Date("2026-04-20").getTime();
-      const diffDays = Math.round(days / (1000 * 60 * 60 * 24));
-      return diffDays >= 0 && diffDays <= 3;
-    }).length,
     [appointments]
   );
 
@@ -355,14 +340,6 @@ useEffect(() => {
               onDeleteAppointment={handleDeleteAppointment}
               canEdit={canEdit}
               canDelete={userRole === "admin"}
-            />
-          )}
-          {view === "notifications" && (
-            <NotificationsPage
-              appointments={appointments}
-              patients={patients}
-              logs={notificationLogs}
-              onRefresh={() => refreshAll()}
             />
           )}
           {view === "followup" && (
