@@ -1,15 +1,21 @@
 import type { Appointment, SystemStatus } from "./types";
 
-export const TODAY = "2026-04-20";
+function getTodayStart(): Date {
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  return today;
+}
 
 export function getSystemStatus(appointment: Appointment): SystemStatus {
   if (appointment.manualStatus === "Selesai") return "Selesai";
   if (appointment.manualStatus === "Dibatalkan") return "Dibatalkan";
   if (appointment.manualStatus === "Tidak Hadir") return "Terlepas";
 
-  const appt = new Date(appointment.appointmentDate).getTime();
-  const today = new Date(TODAY).getTime();
-  const diffDays = Math.round((appt - today) / (1000 * 60 * 60 * 24));
+  const appt = new Date(appointment.appointmentDate);
+  appt.setHours(0, 0, 0, 0);
+
+  const today = getTodayStart();
+  const diffDays = Math.round((appt.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
 
   if (diffDays < 0) return "Terlepas";
   if (diffDays === 0) return "Hari Ini";
@@ -18,9 +24,11 @@ export function getSystemStatus(appointment: Appointment): SystemStatus {
 }
 
 export function getDaysRemaining(appointmentDate: string): number {
-  const appt = new Date(appointmentDate).getTime();
-  const today = new Date(TODAY).getTime();
-  return Math.round((appt - today) / (1000 * 60 * 60 * 24));
+  const appt = new Date(appointmentDate);
+  appt.setHours(0, 0, 0, 0);
+
+  const today = getTodayStart();
+  return Math.round((appt.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
 }
 
 export function getFollowUpRequired(appointment: Appointment): "Ya" | "Tidak" {
