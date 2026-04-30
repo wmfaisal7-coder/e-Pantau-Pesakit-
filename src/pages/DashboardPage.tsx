@@ -69,6 +69,8 @@ export function DashboardPage({
       (row) =>
         patients.some((p) => p.id === row.patientId) &&
         row.contactStatus === "Belum Dihubungi"
+        row.contactStatus === "Jadual Semula" ||
+        row.contactStatus === "Tidak Berjaya Dihubungi")
     )
     .slice(0, 5);
 
