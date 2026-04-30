@@ -22,20 +22,26 @@ function emptyForm(nextCode: string, patientId: string): Omit<Appointment, "id">
     treatmentType: "",
     clinicOrOfficer: "Klinik A",
     manualStatus: "Dijadualkan",
-    notes: "",
-    reminderStatus: "Belum Dihantar",
-    reminderSentAt: null,
-    reminderChannel: null,
-    reminderNote: null
+    notes: ""
   };
 }
 
-export function AppointmentsPage({ appointments, patients, onCreateAppointment, onUpdateAppointment, onDeleteAppointment, canEdit = true, canDelete = true }: Props) {
+export function AppointmentsPage({
+  appointments,
+  patients,
+  onCreateAppointment,
+  onUpdateAppointment,
+  onDeleteAppointment,
+  canEdit = true,
+  canDelete = true
+}: Props) {
   const [open, setOpen] = useState(false);
   const [editing, setEditing] = useState<Appointment | null>(null);
   const [query, setQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState("Semua");
-  const [form, setForm] = useState<Omit<Appointment, "id">>(emptyForm(`T${String(appointments.length + 1).padStart(3, "0")}`, patients[0]?.id ?? ""));
+  const [form, setForm] = useState<Omit<Appointment, "id">>(
+    emptyForm(`T${String(appointments.length + 1).padStart(3, "0")}`, patients[0]?.id ?? "")
+  );
 
   useEffect(() => {
     if (!open && !editing) {
@@ -57,7 +63,11 @@ export function AppointmentsPage({ appointments, patients, onCreateAppointment, 
         patient?.fullName.toLowerCase().includes(q) ||
         patient?.phoneNumber.toLowerCase().includes(q);
 
-      const matchesStatus = statusFilter === "Semua" || systemStatus === statusFilter || appointment.manualStatus === statusFilter;
+      const matchesStatus =
+        statusFilter === "Semua" ||
+        systemStatus === statusFilter ||
+        appointment.manualStatus === statusFilter;
+
       return Boolean(matchesQuery && matchesStatus);
     });
   }, [appointments, patients, query, statusFilter]);
@@ -78,22 +88,20 @@ export function AppointmentsPage({ appointments, patients, onCreateAppointment, 
       treatmentType: appointment.treatmentType,
       clinicOrOfficer: appointment.clinicOrOfficer,
       manualStatus: appointment.manualStatus,
-      notes: appointment.notes,
-      reminderStatus: appointment.reminderStatus,
-      reminderSentAt: appointment.reminderSentAt ?? null,
-      reminderChannel: appointment.reminderChannel ?? null,
-      reminderNote: appointment.reminderNote ?? null
+      notes: appointment.notes
     });
     setOpen(true);
   }
 
   async function submit() {
     if (!form.patientId || !form.appointmentDate || !form.appointmentTime || !form.treatmentType) return;
+
     if (editing) {
       await onUpdateAppointment({ ...editing, ...form });
     } else {
       await onCreateAppointment(form);
     }
+
     setOpen(false);
     setEditing(null);
   }
@@ -109,10 +117,19 @@ export function AppointmentsPage({ appointments, patients, onCreateAppointment, 
       <div className="section-actions">
         <div className="search-box">
           <span>🔍</span>
-          <input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Cari pesakit, kod, rawatan atau pegawai..." />
+          <input
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            placeholder="Cari pesakit, kod, rawatan atau pegawai..."
+          />
         </div>
+
         <div className="table-actions">
-          <select className="filter-select" value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)}>
+          <select
+            className="filter-select"
+            value={statusFilter}
+            onChange={(e) => setStatusFilter(e.target.value)}
+          >
             <option>Semua</option>
             <option>Hari Ini</option>
             <option>Akan Datang</option>
@@ -123,7 +140,10 @@ export function AppointmentsPage({ appointments, patients, onCreateAppointment, 
             <option>Ditunda</option>
             <option>Tidak Hadir</option>
           </select>
-          <button className="primary-btn small" onClick={openCreate} disabled={!canEdit}>Tambah Temujanji</button>
+
+          <button className="primary-btn small" onClick={openCreate} disabled={!canEdit}>
+            Tambah Temujanji
+          </button>
         </div>
       </div>
 
@@ -136,6 +156,7 @@ export function AppointmentsPage({ appointments, patients, onCreateAppointment, 
 
       <div className="card">
         <div className="card-title">Senarai Temujanji ({filteredAppointments.length})</div>
+
         <Table
           rows={filteredAppointments}
           columns={[
@@ -147,15 +168,18 @@ export function AppointmentsPage({ appointments, patients, onCreateAppointment, 
             { header: "Pegawai", render: (row) => row.clinicOrOfficer },
             { header: "Status Sistem", render: (row) => <span className="pill">{getSystemStatus(row)}</span> },
             { header: "Status Manual", render: (row) => row.manualStatus },
-            { header: "Notifikasi", render: (row) => <span className="pill">{row.reminderStatus}</span> },
             { header: "Follow-Up", render: (row) => getFollowUpRequired(row) },
             { header: "Hari Lagi", render: (row) => getDaysRemaining(row.appointmentDate) },
             {
               header: "Tindakan",
               render: (row) => (
                 <div className="table-actions">
-                  <button className="secondary-btn table-btn" onClick={() => openEdit(row)} disabled={!canEdit}>Edit</button>
-                  <button className="danger-btn table-btn" onClick={() => remove(row)} disabled={!canDelete}>Padam</button>
+                  <button className="secondary-btn table-btn" onClick={() => openEdit(row)} disabled={!canEdit}>
+                    Edit
+                  </button>
+                  <button className="danger-btn table-btn" onClick={() => remove(row)} disabled={!canDelete}>
+                    Padam
+                  </button>
                 </div>
               )
             }
@@ -170,20 +194,68 @@ export function AppointmentsPage({ appointments, patients, onCreateAppointment, 
             <p>Rekod temujanji ini akan kekal online jika Supabase aktif.</p>
 
             <div className="form-grid">
-              <div><label>ID Temujanji</label><input value={form.appointmentCode} onChange={(e) => setForm({ ...form, appointmentCode: e.target.value })} /></div>
-              <div><label>Pesakit</label>
-                <select value={form.patientId} onChange={(e) => setForm({ ...form, patientId: e.target.value })}>
+              <div>
+                <label>ID Temujanji</label>
+                <input
+                  value={form.appointmentCode}
+                  onChange={(e) => setForm({ ...form, appointmentCode: e.target.value })}
+                />
+              </div>
+
+              <div>
+                <label>Pesakit</label>
+                <select
+                  value={form.patientId}
+                  onChange={(e) => setForm({ ...form, patientId: e.target.value })}
+                >
                   {patients.map((patient) => (
-                    <option key={patient.id} value={patient.id}>{patient.fullName}</option>
+                    <option key={patient.id} value={patient.id}>
+                      {patient.fullName}
+                    </option>
                   ))}
                 </select>
               </div>
-              <div><label>Tarikh</label><input type="date" value={form.appointmentDate} onChange={(e) => setForm({ ...form, appointmentDate: e.target.value })} /></div>
-              <div><label>Masa</label><input type="time" value={form.appointmentTime} onChange={(e) => setForm({ ...form, appointmentTime: e.target.value })} /></div>
-              <div><label>Jenis Rawatan</label><input value={form.treatmentType} onChange={(e) => setForm({ ...form, treatmentType: e.target.value })} /></div>
-              <div><label>Klinik/Pegawai</label><input value={form.clinicOrOfficer} onChange={(e) => setForm({ ...form, clinicOrOfficer: e.target.value })} /></div>
-              <div><label>Status Manual</label>
-                <select value={form.manualStatus} onChange={(e) => setForm({ ...form, manualStatus: e.target.value as Appointment["manualStatus"] })}>
+
+              <div>
+                <label>Tarikh</label>
+                <input
+                  type="date"
+                  value={form.appointmentDate}
+                  onChange={(e) => setForm({ ...form, appointmentDate: e.target.value })}
+                />
+              </div>
+
+              <div>
+                <label>Masa</label>
+                <input
+                  type="time"
+                  value={form.appointmentTime}
+                  onChange={(e) => setForm({ ...form, appointmentTime: e.target.value })}
+                />
+              </div>
+
+              <div>
+                <label>Jenis Rawatan</label>
+                <input
+                  value={form.treatmentType}
+                  onChange={(e) => setForm({ ...form, treatmentType: e.target.value })}
+                />
+              </div>
+
+              <div>
+                <label>Klinik/Pegawai</label>
+                <input
+                  value={form.clinicOrOfficer}
+                  onChange={(e) => setForm({ ...form, clinicOrOfficer: e.target.value })}
+                />
+              </div>
+
+              <div>
+                <label>Status Manual</label>
+                <select
+                  value={form.manualStatus}
+                  onChange={(e) => setForm({ ...form, manualStatus: e.target.value as Appointment["manualStatus"] })}
+                >
                   <option>Dijadualkan</option>
                   <option>Selesai</option>
                   <option>Dibatalkan</option>
@@ -191,12 +263,30 @@ export function AppointmentsPage({ appointments, patients, onCreateAppointment, 
                   <option>Tidak Hadir</option>
                 </select>
               </div>
-              <div className="span-2"><label>Catatan</label><textarea rows={4} value={form.notes} onChange={(e) => setForm({ ...form, notes: e.target.value })} /></div>
+
+              <div className="span-2">
+                <label>Catatan</label>
+                <textarea
+                  rows={4}
+                  value={form.notes}
+                  onChange={(e) => setForm({ ...form, notes: e.target.value })}
+                />
+              </div>
             </div>
 
             <div className="modal-actions">
-              <button className="secondary-btn" onClick={() => { setOpen(false); setEditing(null); }}>Batal</button>
-              <button className="primary-btn" onClick={submit}>{editing ? "Simpan Perubahan" : "Simpan Temujanji"}</button>
+              <button
+                className="secondary-btn"
+                onClick={() => {
+                  setOpen(false);
+                  setEditing(null);
+                }}
+              >
+                Batal
+              </button>
+              <button className="primary-btn" onClick={submit}>
+                {editing ? "Simpan Perubahan" : "Simpan Temujanji"}
+              </button>
             </div>
           </div>
         </div>
