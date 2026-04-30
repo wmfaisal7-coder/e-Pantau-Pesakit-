@@ -8,10 +8,10 @@ import { PatientsPage } from "./pages/PatientsPage";
 import { AppointmentsPage } from "./pages/AppointmentsPage";
 import { ReportsPage } from "./pages/ReportsPage";
 import { SettingsPage } from "./pages/SettingsPage";
-import { createAppointment, createFollowUpIfNeeded, createPatient, deleteAppointment, deletePatient, getAppSettings, getAppointments, getFollowUps, getNotificationLogs, getPatients, saveAppSettings, updateAppointment, updatePatient } from "./services/dataService";
+import { createAppointment, createFollowUpIfNeeded, createPatient, deleteAppointment, deletePatient, getAppSettings, getAppointments, getFollowUps, getPatients, saveAppSettings, updateAppointment, updatePatient } from "./services/dataService";
 import { getCurrentUserEmail, signOut } from "./services/authService";
 import { hasSupabaseConfig } from "./supabase";
-import type { Appointment, FollowUp, NotificationLog, Patient, ViewName } from "./types";
+import type { Appointment, FollowUp, Patient, ViewName } from "./types";
 
 const pageConfig: Record<ViewName, { title: string; subtitle: string }> = {
   dashboard: {
@@ -58,7 +58,6 @@ export default function App() {
   const [patients, setPatients] = useState<Patient[]>([]);
   const [appointments, setAppointments] = useState<Appointment[]>([]);
   const [followUps, setFollowUps] = useState<FollowUp[]>([]);
-  const [notificationLogs, setNotificationLogs] = useState<NotificationLog[]>([]);
   const [clinicName, setClinicName] = useState("Klinik A");
   const [theme, setTheme] = useState("Dark");
   const [loading, setLoading] = useState(true);
