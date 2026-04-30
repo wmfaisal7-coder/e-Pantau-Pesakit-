@@ -16,8 +16,6 @@ export interface Patient {
   notes: string;
 }
 
-export type ReminderStatus = "Belum Dihantar" | "Sudah Dihantar" | "Gagal" | "Tidak Perlu";
-
 export interface Appointment {
   id: string;
   appointmentCode: string;
@@ -28,20 +26,6 @@ export interface Appointment {
   clinicOrOfficer: string;
   manualStatus: ManualStatus;
   notes: string;
-  reminderStatus: ReminderStatus;
-  reminderSentAt?: string | null;
-  reminderChannel?: string | null;
-  reminderNote?: string | null;
-}
-
-export interface NotificationLog {
-  id: string;
-  appointmentId: string;
-  patientId: string;
-  channel: string;
-  message: string;
-  status: "Sudah Dihantar" | "Gagal" | "Menunggu";
-  sentAt: string;
 }
 
 export interface FollowUp {
