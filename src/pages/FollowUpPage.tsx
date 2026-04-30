@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
 import { getDaysRemaining, getSystemStatus } from "../lib";
-import { updateFollowUp } from "../services/dataService";
+import { updateAppointment, updateFollowUp } from "../services/dataService";
 import type { Appointment, FollowUp, Patient } from "../types";
 
 interface Props {
@@ -23,6 +23,11 @@ export function FollowUpPage({ patients, appointments, followUpItems, onUpdated,
   const activeRecord = useMemo(
     () => followUpItems.find((item) => item.id === activeId) ?? null,
     [followUpItems, activeId]
+  );
+
+  const activeAppointment = useMemo(
+    () => appointments.find((item) => item.id === activeRecord?.appointmentId) ?? null,
+    [appointments, activeRecord]
   );
 
   const pendingCount = followUpItems.filter((item) => item.contactStatus === "Belum Dihubungi").length;
@@ -55,7 +60,9 @@ export function FollowUpPage({ patients, appointments, followUpItems, onUpdated,
 
   async function saveRecord() {
     if (!activeRecord) return;
+
     setSaving(true);
+
     const nextRecord: FollowUp = {
       ...activeRecord,
       contactStatus: status,
@@ -64,11 +71,25 @@ export function FollowUpPage({ patients, appointments, followUpItems, onUpdated,
       handledBy: "Siti Admin"
     };
 
-    const nextItems = followUpItems.map((item) => item.id === activeRecord.id ? nextRecord : item);
+    const nextItems = followUpItems.map((item) => (item.id === activeRecord.id ? nextRecord : item));
     onUpdated(nextItems);
 
     try {
       await updateFollowUp(nextRecord);
+
+      if (status === "Jadual Semula" && activeAppointment) {
+        const updatedAppointment: Appointment = {
+          ...activeAppointment,
+          appointmentDate: date,
+          manualStatus: "Dijadualkan",
+          notes: note
+            ? `${activeAppointment.notes ? activeAppointment.notes + " | " : ""}Jadual semula: ${note}`
+            : activeAppointment.notes
+        };
+
+        await updateAppointment(updatedAppointment);
+      }
+
       if (onRefresh) {
         await onRefresh();
       }
